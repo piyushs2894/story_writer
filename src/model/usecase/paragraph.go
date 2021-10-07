@@ -2,10 +2,10 @@ package usecase
 
 import (
 	"context"
-	"log"
-
 	"story_writer/src/model"
 	"story_writer/src/model/db/mysql"
+
+	log "github.com/sirupsen/logrus"
 )
 
 type ParagraphUseCase interface {
@@ -29,7 +29,7 @@ func (puc *paragraphUseCase) InsertParagraph(ctx context.Context, paragraph *mod
 	//TODO: Implement jaegar open-tracing
 	id, err := puc.db.InsertParagraph(ctx, paragraph)
 	if err != nil {
-		log.Printf("[paragraphUseCase][InsertParagraph][Error] : %+v ", err)
+		log.Errorln("[paragraphUseCase][InsertParagraph][Error] : ", err)
 		return 0, err
 	}
 
@@ -39,7 +39,7 @@ func (puc *paragraphUseCase) InsertParagraph(ctx context.Context, paragraph *mod
 func (puc *paragraphUseCase) IncrementLength(ctx context.Context, paragraph *model.Paragraph) (int64, error) {
 	id, err := puc.db.IncrementLength(ctx, paragraph)
 	if err != nil {
-		log.Printf("[paragraphUseCase][IncrementLength][Error] : %+v ", err)
+		log.Errorln("[paragraphUseCase][IncrementLength][Error] : ", err)
 		return 0, err
 	}
 
@@ -49,7 +49,7 @@ func (puc *paragraphUseCase) IncrementLength(ctx context.Context, paragraph *mod
 func (puc *paragraphUseCase) GetParagraphInProgress(ctx context.Context) (*model.Paragraph, error) {
 	paraDetail, err := puc.db.GetParagraphInProgress(ctx)
 	if err != nil {
-		log.Printf("paragraphUseCase][GetParagraphInProgress][Error] : %+v ", err)
+		log.Errorln("paragraphUseCase][GetParagraphInProgress][Error] : ", err)
 		return nil, err
 	}
 
@@ -59,7 +59,7 @@ func (puc *paragraphUseCase) GetParagraphInProgress(ctx context.Context) (*model
 func (puc *paragraphUseCase) GetParagraphsByStoryId(ctx context.Context, storyId int64) ([]model.Paragraph, error) {
 	paraResp, err := puc.db.GetParagraphsByStoryId(ctx, storyId)
 	if err != nil {
-		log.Printf("paragraphUseCase][GetParagraphsByStoryId][Error] : %+v ", err)
+		log.Errorln("paragraphUseCase][GetParagraphsByStoryId][Error] : ", err)
 		return nil, err
 	}
 

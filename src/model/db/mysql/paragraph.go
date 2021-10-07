@@ -2,9 +2,10 @@ package mysql
 
 import (
 	"context"
-	"log"
 	"story_writer/src/constant"
 	"story_writer/src/model"
+
+	log "github.com/sirupsen/logrus"
 )
 
 type ParagraphDB interface {
@@ -48,7 +49,7 @@ func (pdb *paragraphDB) GetParagraphInProgress(ctx context.Context) (*model.Para
 
 	err := statements.GetParagraphInProgress.Select(&paragraphs, model.InProgress)
 	if err != nil {
-		log.Println("[GetParagraphInProgress]", err)
+		log.Errorln("[GetParagraphInProgress] Error: ", err)
 		return nil, err
 	}
 
@@ -64,7 +65,7 @@ func (pdb *paragraphDB) GetParagraphsByStoryId(ctx context.Context, storyId int6
 
 	err := statements.GetParagraphsByStoryId.Select(&paragraphs, model.InProgress)
 	if err != nil {
-		log.Println("[GetParagraphsByStoryId] Error: ", err)
+		log.Errorln("[GetParagraphsByStoryId] Error: ", err)
 		return nil, err
 	}
 

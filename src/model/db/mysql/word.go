@@ -3,7 +3,8 @@ package mysql
 import (
 	"context"
 	"database/sql"
-	"log"
+
+	log "github.com/sirupsen/logrus"
 
 	"story_writer/src/model"
 )
@@ -36,10 +37,10 @@ func (wdb *wordDB) GetWordById(ctx context.Context, wordID int64) (*model.Word, 
 	err := statements.GetWordById.Get(&word, wordID)
 	if err != nil {
 		if err == sql.ErrNoRows {
-			log.Println("[GetWordById] No rows found. Error: ", err)
+			log.Errorln("[GetWordById] No rows found. Error: ", err)
 			return nil, nil
 		}
-		log.Println("[GetWordById] Error: ", err)
+		log.Errorln("[GetWordById] Error: ", err)
 		return nil, err
 	}
 	return &word, err
@@ -51,10 +52,10 @@ func (wdb *wordDB) GetWordsBySentenceId(ctx context.Context, sentenceId int64) (
 	err := statements.GetWordsBySentenceId.Select(&words, sentenceId)
 	if err != nil {
 		if err == sql.ErrNoRows {
-			log.Println("[GetWordsBySentenceId]", err)
+			log.Errorln("[GetWordsBySentenceId]", err)
 			return nil, nil
 		}
-		log.Println("[GetWordsBySentenceId]", err)
+		log.Errorln("[GetWordsBySentenceId]", err)
 		return nil, err
 	}
 	return words, err

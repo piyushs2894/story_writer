@@ -2,10 +2,10 @@ package usecase
 
 import (
 	"context"
-	"log"
-
 	"story_writer/src/model"
 	"story_writer/src/model/db/mysql"
+
+	log "github.com/sirupsen/logrus"
 )
 
 type StoryUseCase interface {
@@ -30,7 +30,7 @@ func NewStoryUseCase(db mysql.StoryDB) StoryUseCase {
 func (suc *storyUseCase) InsertStory(ctx context.Context, story *model.Story) (int64, error) {
 	id, err := suc.db.InsertStory(ctx, story)
 	if err != nil {
-		log.Printf("[storyUseCase][InsertStory][Error] : %+v ", err)
+		log.Errorln("[storyUseCase][InsertStory][Error] : ", err)
 		return 0, err
 	}
 
@@ -40,7 +40,7 @@ func (suc *storyUseCase) InsertStory(ctx context.Context, story *model.Story) (i
 func (suc *storyUseCase) GetStoryInProgress(ctx context.Context) (*model.Story, error) {
 	storyDetail, err := suc.db.GetStoryInProgress(ctx)
 	if err != nil {
-		log.Printf("storyUseCase][GetStoryInProgress][Error] : %+v ", err)
+		log.Errorln("storyUseCase][GetStoryInProgress][Error] : ", err)
 		return nil, err
 	}
 
@@ -50,7 +50,7 @@ func (suc *storyUseCase) GetStoryInProgress(ctx context.Context) (*model.Story, 
 func (suc *storyUseCase) UpdateTitle(ctx context.Context, story *model.Story) (int64, error) {
 	id, err := suc.db.UpdateTitle(ctx, story)
 	if err != nil {
-		log.Printf("storyUseCase][UpdateTitle][Error] : %+v ", err)
+		log.Errorln("storyUseCase][UpdateTitle][Error] : ", err)
 		return 0, err
 	}
 
@@ -60,7 +60,7 @@ func (suc *storyUseCase) UpdateTitle(ctx context.Context, story *model.Story) (i
 func (suc *storyUseCase) IncrementLength(ctx context.Context, story *model.Story) (int64, error) {
 	id, err := suc.db.IncrementLength(ctx, story)
 	if err != nil {
-		log.Printf("[storyUseCase][IncrementLength][Error] : %+v ", err)
+		log.Errorln("[storyUseCase][IncrementLength][Error] : ", err)
 		return 0, err
 	}
 
@@ -70,7 +70,7 @@ func (suc *storyUseCase) IncrementLength(ctx context.Context, story *model.Story
 func (suc *storyUseCase) GetStories(ctx context.Context, params model.Params) ([]model.Story, error) {
 	stories, err := suc.db.GetStories(ctx, params)
 	if err != nil {
-		log.Printf("storyUseCase][GetStories][Error] : %+v ", err)
+		log.Errorln("storyUseCase][GetStories][Error] : ", err)
 		return nil, err
 	}
 
@@ -80,7 +80,7 @@ func (suc *storyUseCase) GetStories(ctx context.Context, params model.Params) ([
 func (suc *storyUseCase) GetStoryById(ctx context.Context, storyId int64) (*model.StoryResponse, error) {
 	storyResp, err := suc.db.GetStoryById(ctx, storyId)
 	if err != nil {
-		log.Printf("storyUseCase][GetStoryById][Error] : %+v ", err)
+		log.Errorln("storyUseCase][GetStoryById][Error] : ", err)
 		return nil, err
 	}
 

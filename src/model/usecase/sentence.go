@@ -2,10 +2,10 @@ package usecase
 
 import (
 	"context"
-	"log"
-
 	"story_writer/src/model"
 	"story_writer/src/model/db/mysql"
+
+	log "github.com/sirupsen/logrus"
 )
 
 type SentenceUseCase interface {
@@ -29,7 +29,7 @@ func (suc *sentenceUseCase) InsertSentence(ctx context.Context, sentence *model.
 	//TODO: Implement jaegar open-tracing
 	id, err := suc.db.InsertSentence(ctx, sentence)
 	if err != nil {
-		log.Printf("[sentenceUseCase][InsertSentence][Error] : %+v ", err)
+		log.Errorln("[sentenceUseCase][InsertSentence][Error] : ", err)
 		return 0, err
 	}
 
@@ -39,7 +39,7 @@ func (suc *sentenceUseCase) InsertSentence(ctx context.Context, sentence *model.
 func (suc *sentenceUseCase) IncrementLength(ctx context.Context, sentence *model.Sentence) (int64, error) {
 	id, err := suc.db.IncrementLength(ctx, sentence)
 	if err != nil {
-		log.Printf("[sentenceUseCase][IncrementLength][Error] : %+v ", err)
+		log.Errorln("[sentenceUseCase][IncrementLength][Error] : ", err)
 		return 0, err
 	}
 
@@ -49,7 +49,7 @@ func (suc *sentenceUseCase) IncrementLength(ctx context.Context, sentence *model
 func (suc *sentenceUseCase) GetSentenceInProgress(ctx context.Context) (*model.Sentence, error) {
 	sentenceDetail, err := suc.db.GetSentenceInProgress(ctx)
 	if err != nil {
-		log.Printf("sentenceUseCase][GetSentenceInProgress][Error] : %+v ", err)
+		log.Errorln("sentenceUseCase][GetSentenceInProgress][Error] : ", err)
 		return nil, err
 	}
 
@@ -59,7 +59,7 @@ func (suc *sentenceUseCase) GetSentenceInProgress(ctx context.Context) (*model.S
 func (suc *sentenceUseCase) GetSentenceParaIdsByStoryId(ctx context.Context, storyId int64) ([]model.SentenceParaId, error) {
 	sentenceParaIds, err := suc.db.GetSentenceParaIdsByStoryId(ctx, storyId)
 	if err != nil {
-		log.Printf("sentenceUseCase][GetSentenceParaIdsByStoryId][Error] : %+v ", err)
+		log.Errorln("sentenceUseCase][GetSentenceParaIdsByStoryId][Error] : ", err)
 		return nil, err
 	}
 

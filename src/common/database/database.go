@@ -2,13 +2,13 @@ package database
 
 import (
 	"database/sql"
-	"log"
 	"time"
+
+	"story_writer/src/common/config"
 
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/jmoiron/sqlx"
-
-	"story_writer/src/common/config"
+	log "github.com/sirupsen/logrus"
 )
 
 type MasterSlave struct {
@@ -86,12 +86,12 @@ func (d *DB) Connect(driver string) error {
 	db, err = sqlx.Open(driver, d.DBString)
 
 	if err != nil {
-		log.Println("[Error]: DB open connection error", err.Error())
+		log.Errorln("[Error]: DB open connection error", err.Error())
 	} else {
 		d.DBConnection = db
 		err = db.Ping()
 		if err != nil {
-			log.Println("[Error]: DB connection error", err.Error())
+			log.Errorln("[Error]: DB connection error", err.Error())
 		}
 		return err
 	}
@@ -106,9 +106,9 @@ func (d *DB) ConnectAndMonitor(driver string) {
 	err := d.Connect(driver)
 
 	if err != nil {
-		log.Printf("Not connected to database %s, trying \n", d.DBString)
+		log.Errorln("Not connected to database  \n", d.DBString)
 	} else {
-		log.Printf("Success connecting to database %s \n", d.DBString)
+		log.Infoln("Success connecting to database \n", d.DBString)
 	}
 
 	ticker := time.NewTicker(time.Duration(d.RetryInterval) * time.Second)
@@ -121,7 +121,7 @@ func (d *DB) ConnectAndMonitor(driver string) {
 				} else {
 					err := d.DBConnection.Ping()
 					if err != nil {
-						log.Println("[Error]: DB reconnect error", err.Error())
+						log.Errorln("[Error]: DB reconnect error", err.Error())
 					}
 				}
 			case <-d.doneChannel:
@@ -141,7 +141,7 @@ func (d *DB) Prepare(query string) *sql.Stmt {
 	statement, err := d.DBConnection.Prepare(query)
 
 	if err != nil {
-		log.Printf("Failed to prepare query: %s. Error: %s\n", query, err.Error())
+		log.Errorln("Failed to prepare query: %s. Error: %s\n", query, err.Error())
 	}
 
 	return statement

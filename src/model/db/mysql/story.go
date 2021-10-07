@@ -3,9 +3,10 @@ package mysql
 import (
 	"context"
 	"fmt"
-	"log"
 	"story_writer/src/constant"
 	"story_writer/src/model"
+
+	log "github.com/sirupsen/logrus"
 )
 
 type StoryDB interface {
@@ -59,7 +60,7 @@ func (sdb *storyDB) GetStoryInProgress(ctx context.Context) (*model.Story, error
 	var stories []model.Story
 	err := statements.GetStoryInProgress.Select(&stories, model.InProgress)
 	if err != nil {
-		log.Println("[GetStoryInProgress] Error: ", err)
+		log.Errorln("[GetStoryInProgress] Error: ", err)
 		return nil, err
 	}
 	if len(stories) == 0 {
@@ -86,7 +87,7 @@ func (sdb *storyDB) GetStories(ctx context.Context, params model.Params) ([]mode
 	defer execStmt.Close()
 
 	if err := execStmt.Select(&stories); err != nil {
-		log.Println("GetStories SQLX Error:", err)
+		log.Errorln("GetStories SQLX Error:", err)
 		return stories, err
 	}
 
@@ -99,7 +100,7 @@ func (sdb *storyDB) GetStoryById(ctx context.Context, storyId int64) (*model.Sto
 
 	err := statements.GetStoryById.Select(&stories, storyId)
 	if err != nil {
-		log.Println("[GetStoryById] Error: ", err)
+		log.Errorln("[GetStoryById] Error: ", err)
 		return nil, err
 	}
 	if len(stories) == 0 {

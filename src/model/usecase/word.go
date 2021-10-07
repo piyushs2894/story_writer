@@ -2,10 +2,10 @@ package usecase
 
 import (
 	"context"
-	"log"
-
 	"story_writer/src/model"
 	"story_writer/src/model/db/mysql"
+
+	log "github.com/sirupsen/logrus"
 )
 
 type WordUseCase interface {
@@ -28,7 +28,7 @@ func (wuc *wordUseCase) InsertWord(ctx context.Context, word *model.Word) (int64
 	//TODO: Implement jaegar open-tracing
 	id, err := wuc.db.InsertWord(ctx, word)
 	if err != nil {
-		log.Printf("[wordUseCase][InsertWord][Error] : %+v ", err)
+		log.Errorln("[wordUseCase][InsertWord][Error] : ", err)
 		return 0, err
 	}
 
@@ -39,7 +39,7 @@ func (wuc *wordUseCase) GetWordById(ctx context.Context, wordId int64) (*model.W
 	//TODO: Implement jaegar open-tracing
 	wordDetail, err := wuc.db.GetWordById(ctx, wordId)
 	if err != nil {
-		log.Printf("[wordUseCase][GetWordById][Error] : %+v ", err)
+		log.Errorln("[wordUseCase][GetWordById][Error] : ", err)
 		return nil, err
 	}
 
@@ -49,7 +49,7 @@ func (wuc *wordUseCase) GetWordById(ctx context.Context, wordId int64) (*model.W
 func (wuc *wordUseCase) GetWordsBySentenceId(ctx context.Context, sentenceId int64) ([]model.Word, error) {
 	words, err := wuc.db.GetWordsBySentenceId(ctx, sentenceId)
 	if err != nil {
-		log.Printf("[wordUseCase][GetWordsBySentenceId][Error] : %+v ", err)
+		log.Errorln("[wordUseCase][GetWordsBySentenceId][Error] : ", err)
 		return nil, err
 	}
 

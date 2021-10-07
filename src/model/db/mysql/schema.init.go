@@ -1,9 +1,10 @@
 package mysql
 
 import (
-	"log"
 	"story_writer/src/common/database"
 	"story_writer/src/constant"
+
+	log "github.com/sirupsen/logrus"
 
 	"github.com/jmoiron/sqlx"
 )
@@ -36,7 +37,7 @@ var (
 func Init(dbConnMap map[string]*database.MasterSlave) {
 	db = *dbConnMap[constant.DB_STORY_WRITER]
 
-	log.Println("Initiating statements...")
+	log.Infoln("Initiating statements...")
 
 	statements = PreparedStatements{
 		InsertWord:                  db.Master.Preparex(insertWordQuery),
@@ -57,7 +58,7 @@ func Init(dbConnMap map[string]*database.MasterSlave) {
 		GetSentenceParaIdsByStoryId: db.Slave.Preparex(getSentenceParaIdsByStoryId),
 	}
 
-	log.Println("Initiated statements...")
+	log.Infoln("Initiated statements...")
 }
 
 var (

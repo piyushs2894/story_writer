@@ -5,16 +5,15 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"log"
 	"net"
 	"net/http"
 	"regexp"
-
 	"runtime/debug"
+	"story_writer/src/lib"
 	"syscall"
 	"time"
 
-	"story_writer/src/lib"
+	log "github.com/sirupsen/logrus"
 )
 
 // each handler can return the data and error, and serveHTTP can chose how to convert this
@@ -107,7 +106,7 @@ func (fn HandlerFunc) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			}
 		}
 
-		log.Println("handler error", err.Error(), r.URL.Path)
+		log.Infoln("handler error", err.Error(), r.URL.Path)
 
 		w.WriteHeader(errStatus)
 	}
@@ -117,7 +116,7 @@ func (fn HandlerFunc) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 
 	buf, _ = response.MarshalJSON()
-	log.Println(string(buf[:]))
+	log.Infoln(string(buf[:]))
 	w.Write(buf)
 	return
 }

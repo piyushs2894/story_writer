@@ -3,13 +3,12 @@ package config
 import (
 	"fmt"
 	"io/ioutil"
-	"log"
 	"os"
+	"story_writer/src/constant"
 	"strings"
 	"time"
 
-	"story_writer/src/constant"
-
+	log "github.com/sirupsen/logrus"
 	gcfg "gopkg.in/gcfg.v1"
 )
 
@@ -54,7 +53,7 @@ func ReadConfig(cfg *Config, path string, module string) bool {
 
 		config, err := ioutil.ReadFile(fname)
 		if err != nil {
-			log.Println("common/config.go function ReadConfig", err)
+			log.Errorln("common/config.go function ReadConfig", err)
 			return false
 		}
 
@@ -64,7 +63,7 @@ func ReadConfig(cfg *Config, path string, module string) bool {
 	err := gcfg.ReadStringInto(cfg, strings.Join(configString, "\n\n"))
 
 	if err != nil {
-		log.Println("common/config.go function ReadConfig", err)
+		log.Errorln("common/config.go function ReadConfig", err)
 		return false
 	}
 

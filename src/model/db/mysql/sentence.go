@@ -2,9 +2,10 @@ package mysql
 
 import (
 	"context"
-	"log"
 	"story_writer/src/constant"
 	"story_writer/src/model"
+
+	log "github.com/sirupsen/logrus"
 )
 
 type SentenceDB interface {
@@ -48,7 +49,7 @@ func (sdb *sentenceDB) GetSentenceInProgress(ctx context.Context) (*model.Senten
 
 	err := statements.GetSentenceInProgress.Select(&sentences, model.InProgress)
 	if err != nil {
-		log.Println("[GetSentenceInProgress]", err)
+		log.Errorln("[GetSentenceInProgress]", err)
 		return nil, err
 	}
 	if len(sentences) == 0 {
@@ -63,7 +64,7 @@ func (sbd *sentenceDB) GetSentenceParaIdsByStoryId(ctx context.Context, storyId 
 
 	err := statements.GetSentenceParaIdsByStoryId.Select(&sentenceParaIds, storyId)
 	if err != nil {
-		log.Println("[GetSentenceParaIdsByStoryId] Error: ", err)
+		log.Errorln("[GetSentenceParaIdsByStoryId] Error: ", err)
 		return nil, err
 	}
 	if len(sentenceParaIds) == 0 {

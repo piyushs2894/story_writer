@@ -3,7 +3,6 @@ package manager
 import (
 	"context"
 	"fmt"
-	"log"
 	"story_writer/src/constant"
 	"story_writer/src/model"
 )
@@ -64,7 +63,6 @@ func (mod *Module) AddWord(ctx context.Context, word string) (*model.AddWordResp
 	if story == nil || story.Status == model.TitleInProgress {
 		return &storyResp, nil
 	}
-	log.Println("********** Story: ", storyId)
 
 	if paragraph == nil {
 		paragraphId, err = mod.useCases.ParagraphUseCase.InsertParagraph(ctx, &model.Paragraph{StoryId: storyId, Length: 0, Status: model.InProgress})
@@ -75,7 +73,6 @@ func (mod *Module) AddWord(ctx context.Context, word string) (*model.AddWordResp
 		paragraphId = paragraph.ID
 	}
 
-	log.Println("********** Paragraph: ", paragraphId)
 	if sentence == nil {
 		sentenceId, err = mod.useCases.SentenceUseCase.InsertSentence(ctx, &model.Sentence{ParagraphId: paragraphId, Length: 0, Status: model.InProgress})
 		if err != nil {
@@ -85,7 +82,6 @@ func (mod *Module) AddWord(ctx context.Context, word string) (*model.AddWordResp
 		sentenceId = sentence.ID
 	}
 
-	log.Println("********** Sentence: ", sentenceId)
 	_, err = mod.useCases.WordUseCase.InsertWord(ctx, &model.Word{Word: word, SentenceId: sentenceId})
 	if err != nil {
 		return nil, err
@@ -96,19 +92,19 @@ func (mod *Module) AddWord(ctx context.Context, word string) (*model.AddWordResp
 	if sentence != nil {
 		wordsLength = sentence.Length + 1
 	}
-	log.Println("********** Length words: ", wordsLength)
+
 	_, err = mod.useCases.SentenceUseCase.IncrementLength(ctx, &model.Sentence{ID: sentenceId, Length: wordsLength, Status: model.InProgress})
 	if err != nil {
 		return nil, err
 	}
 
 	sentencesLength := 1
-	//if sentence is nil, it means a new sentence is initialized which increases length of sentences in a paragraph
+	//if words length has reached max, it means current sentence is Completed, so need to increase current paragraph length
 	if wordsLength == constant.MAX_WORDS_LENGTH {
 		if paragraph != nil {
 			sentencesLength = paragraph.Length + 1
 		}
-		log.Println("********** Length sentences: ", sentencesLength)
+
 		_, err = mod.useCases.ParagraphUseCase.IncrementLength(ctx, &model.Paragraph{ID: paragraphId, Length: sentencesLength, Status: model.InProgress})
 		if err != nil {
 			return nil, err
@@ -116,11 +112,12 @@ func (mod *Module) AddWord(ctx context.Context, word string) (*model.AddWordResp
 	}
 
 	paraLength := 1
+	//if sentence length has reached max, it means current paragraph is Completed, so need to increase current story length
 	if sentencesLength == constant.MAX_SENTENCE_LENGTH {
 		if story != nil {
 			paraLength = story.Length + 1
 		}
-		log.Println("********** Length paras: ", paraLength)
+
 		_, err = mod.useCases.StoryUseCase.IncrementLength(ctx, &model.Story{ID: storyId, Length: paraLength, Status: model.InProgress})
 		if err != nil {
 			return nil, err
@@ -132,8 +129,6 @@ func (mod *Module) AddWord(ctx context.Context, word string) (*model.AddWordResp
 	if err != nil {
 		return nil, err
 	}
-
-	log.Println("********** END: ", story)
 
 	if story != nil {
 		storyResp.Title = story.Title

@@ -1,13 +1,8 @@
 DROP DATABASE IF EXISTS `story_db`;
-Create Database `story_db`;
+Create Database IF NOT EXISTS `story_db`;
 CREATE USER 'verloop'@'localhost' IDENTIFIED BY 'verloop';
-GRANT ALL PRIVILEGES ON * . * TO 'verloop'@'localhost';
-
-
-/*
-Word TABLE
-*/
-DROP TABLE IF EXISTS `words`;
+USE `story_db`;
+GRANT ALL PRIVILEGES ON story_db.* TO 'verloop'@'localhost';
 
 CREATE TABLE `words` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -48,3 +43,7 @@ CREATE TABLE `stories` (
   `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
 ) ENGINE = InnoDB DEFAULT CHARSET=utf8;
+
+ALTER TABLE `paragraphs` ADD CONSTRAINT `fk_stories_paragraph` FOREIGN KEY (`story_id`) REFERENCES `stories` (`id`) ON DELETE CASCADE;
+ALTER TABLE `sentences` ADD CONSTRAINT `fk_paragraphs_sentence` FOREIGN KEY (`paragraph_id`) REFERENCES `paragraphs` (`id`) ON DELETE CASCADE;
+ALTER TABLE `words` ADD CONSTRAINT `fk_sentences_words` FOREIGN KEY (`sentence_id`) REFERENCES `sentences` (`id`) ON DELETE CASCADE;
